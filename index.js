@@ -11,7 +11,7 @@ const openai = new OpenAI({
 
 app.post('/ask', async (req, res) => {
   const message = req.body.message;
-  console.log(`====>>> received message: ${message}`)
+  console.log(`====>>> received message: ${message}`);
   // Generate a response text.
 
   const prompt = `
@@ -31,12 +31,16 @@ app.post('/ask', async (req, res) => {
     ],
   });
 
-  const completion_text = completion.choices[0].message.content;
+  const completionText = completion.choices[0].message.content;
+  console.log(`====>>> generated response: ${message}`);
 
-  const responseText = `${completion_text}`;
 
+  const isNegativeMsg = completionText.includes(
+    'You have to provide me with a valid time and date.'
+  );
   // Send the response.
-  res.send({ text: responseText });
+  const status = isNegativeMsg ? 400 : 200;
+  res.status(status).send({ text: completionText });
 });
 
 app.listen(3000, () => {

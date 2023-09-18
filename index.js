@@ -11,6 +11,7 @@ const openai = new OpenAI({
 
 app.post('/ask', async (req, res) => {
   const message = req.body.message;
+  console.log(`====>>> received message: ${message}`)
   // Generate a response text.
 
   const prompt = `

@@ -19,7 +19,7 @@ app.post('/ask', async (req, res) => {
   If the user has provided day and time for reservation, answer with a confirmation, but if the user didn't provide you valid day and time, answer with a negation.
   The answer must be short and simple, and it must be either positive or negative. We can assume that the reservation is possible if the time is provided.
   If positive, return message in format: You have successfully made a reservation for [time and date user provided].
-  If the input is invalid (not time or date/day) say: You have to provide me with a valid time and date.
+  If the input is invalid (time or date/day is not present) say: You have to provide me with a valid time and date.
   If negative, please, say: I'm sorry, but we don't have any available tables for [time and date user provided].
   `;
 
@@ -31,16 +31,16 @@ app.post('/ask', async (req, res) => {
     ],
   });
 
-  const completionText = completion.choices[0].message.content;
-  console.log(`====>>> generated response: ${message}`);
+  const responseText = completion.choices[0].message.content;
+  console.log(`====>>> generated response: ${responseText}`);
 
 
-  const isNegativeMsg = completionText.includes(
+  const isNegativeMsg = responseText.includes(
     'You have to provide me with a valid time and date.'
   );
   // Send the response.
   const status = isNegativeMsg ? 400 : 200;
-  res.status(status).send({ text: completionText });
+  res.status(status).send({ text: responseText });
 });
 
 app.listen(3000, () => {

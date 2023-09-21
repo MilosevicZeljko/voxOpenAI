@@ -61,19 +61,20 @@ function handleHttp(e) {
   if (e.code == 200) {
     const res = JSON.parse(e.text);
     call.say(res.text, Language.US_ENGLISH_FEMALE);
-    call.say('Thanks for making reservation!', Language.US_ENGLISH_FEMALE);
-    call.terminate();
+    call.addEventListener(CallEvents.PlaybackFinished, function (e) {
+      call.hangup();
+    });
+  } else if (e.code == 400) {
+    const res = JSON.parse(e.text);
+    playOops(res.text);
   } else {
     // HTTP error - play Oops message
-    playOops();
+    playOops("Oops! Sorry, I couldn't handle the request, please try again");
   }
 }
 
-function playOops() {
-  call.say(
-    "Oops! Sorry, I couldn't handle the request, please try again",
-    Language.US_ENGLISH_FEMALE
-  );
+function playOops(message) {
+  call.say(message, Language.US_ENGLISH_FEMALE);
   call.addEventListener(CallEvents.PlaybackFinished, function (e) {
     call.removeEventListener(CallEvents.PlaybackFinished);
     handleIntroPlayed();
